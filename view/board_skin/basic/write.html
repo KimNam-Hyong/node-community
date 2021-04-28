@@ -1,0 +1,147 @@
+{% extends '../../layout.html' %}
+{% block content %}
+<style>
+    #bo-write{display:none}
+</style>
+<!-- 로그인 화면 만들기 -->
+<div class="container" id="bo-write">
+    <form name="form_write" id="form-write" method="post" enctype="multipart/form-data" action="/bbs_post/write" onsubmit="return checkForm()">
+    <input type="hidden" name="f_bo_id" value="{{params.bo_id}}">
+    <input type="hidden" name="user_id" value="{{user.user_id}}">
+    <input type="hidden" name="w" value="{% if row.id %}u{% endif %}">
+    {% if row.id %}
+    <input type="hidden" name="id" value="{{row.id}}">
+    
+    {% endif %}
+    <table class="table">
+        <tbody>
+           
+            {% if bRow.is_secret != 0 or bRow.is_notice == 1 %}
+            <tr>
+                <th>옵션</th>
+                <td>
+                    {% if bRow.is_secret == 1%}
+                    <!-- 비밀글 -->
+                    <input type="checkbox" name="is_secret" value="1" id="is_secret"{% if row.is_secret == 1 %} checked {% endif %}><label for="is_secret">비밀글</label>
+                    {% elif bRow.is_secret == 2 %}
+                    <!-- 자동 비밀글-->
+                    <input type="hidden" name="is_secret" value="1"> 자동비밀글
+                    {% else %}
+                    {% endif %}
+                    
+                    {% if 9 < user.user_level and bRow.is_notice == 1 %}
+                    <!-- 공지사항 여부-->
+                    <input type="checkbox" name="is_notice" id="is_notice" value="1"{% if row.is_notice == 1 %} checked {% endif %}><label for="is_notice">공지사항</label>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% if user == "" %}
+            {% else %}
+            <tr>
+                <th>이름</th>
+                <td><input type="text" name="user_name" value="{{row.user_name}}" class="form-control"></td>
+            </tr>
+            {% endif %}
+            {% if user.user_id == '' %}
+            {% if bRow.is_secret == 1 or bRow.is_secret == 2%}
+            <tr>
+                <th>비밀번호</th>
+                <td><input type="password" name="bo_password" value="" class="form-control"></td>
+            </tr>
+            {% endif %}
+            {% else %}
+            <tr>
+                <th>비밀번호</th>
+                <td><input type="password" name="bo_password" value="" class="form-control"></td>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>제목</th>
+                <td><input type="text" name="bo_subject" value="{{row.bo_subject}}" class="form-control"></td>
+            </tr>
+            <tr>
+                <th>내용</th>
+                <td>
+                    <textarea name="bo_content" class="form-control" rows="5">{{row.bo_content}}</textarea>
+                </td>
+            </tr>
+            
+            
+            {% 
+                if bRow.bo_upload_level <= user_level
+            %}
+            {%    
+                for file in range(0,bRow.bo_file_ea)
+            %}
+            <tr>
+                <th>파일첨부{{loop.index}}</th>
+                <td>
+                    <input type="file" name="file" class="form-control" onchange="fileUpload('{{loop.index}}')">
+                    <div id="file-view{{loop.index}}"></div>
+                    <input type="hidden" name="file_path[]" value="" id="file_path{{loop.index}}">
+                    <input type="hidden" name="file_thum_path[]" value="" id="file_thum_path{{loop.index}}">
+                    <input type="hidden" name="file_name[]" value="" id="file_name{{loop.index}}">
+                    <input type="hidden" name="file_size[]" value="" id="file_size{{loop.index}}">
+                    <input type="hidden" name="mimetype[]" value="" id="mimetype{{loop.index}}">
+                </td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+    <div class="text-center col-lg-12 col-xs-12 col-md-12">
+        <button class="btn btn-primary">확 인</button>
+        <a href="/bbs/{{params.bo_id}}/list" class="btn btn-warning">목 록</a>
+    </div>
+    </form>
+</div>
+<!-- 로그인 화면 만들기 -->
+{% endblock %}
+{% block script%}
+<!-- 스크립트 시작-->
+<script type="text/javascript">
+    window.onload = () =>{
+        //로그인 오류가 발생할 시 문구 띄우기
+        if ('{{errorMsg}}'!='') {
+            Swal.fire('{{errorMsg}}')
+            .then(result => {
+                location.href="/";
+            });
+            history.back();
+            //alert(new URL(location.href).searchParams.get('loginError'));
+            return;
+        }else{
+            document.getElementById("bo-write").style.display='block';
+        }
+    }
+    function fileUpload(no){
+        const formData = new FormData();
+        const files = document.getElementsByName("file")[no-1].files;
+        console.log(files[0]);
+        const bo_id = document.getElementsByName("f_bo_id")[0].value;
+        formData.append('bo_file', files[0]);
+        formData.append('bo_id',bo_id);
+        axios.post('/bbs_post/upload', formData)
+          .then((res) => {
+            console.log(res);
+            document.getElementById("file_path"+no).value=res.data.path;
+            document.getElementById("file_name"+no).value=res.data.filename;
+            document.getElementById("file_size"+no).value=res.data.size;
+            document.getElementById("mimetype"+no).value=res.data.mimetype;
+            if(-1 < res.data.mimetype.indexOf("image")){
+                document.getElementById("file_thum_path"+no).value='uploads/thumb_'+res.data.filename;
+            }
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+    }
+    function checkForm(){
+        const form = document.form;
+        form.action="/bbs_post/write";
+        form.submit();
+    }
+</script>
+<!-- 스크립트 끝 -->
+{% endblock %}

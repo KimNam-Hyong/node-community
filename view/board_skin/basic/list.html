@@ -1,0 +1,133 @@
+{% extends '../../layout.html' %}
+{% block content %}
+<style>
+    #bo-list{display:none}
+</style>
+<!-- 게시판 목록 만들기 -->
+<div class="container" id="bo-list">
+    <div class="col-lg-12 col-xs-12 col-md-12" style="text-align:right">
+        <a href="/bbs/{{params.bo_id}}/write">글쓰기</a>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>글쓴이</th>
+                <th>조회수</th>
+                <th>글쓴날짜</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for notice in noticeRow%}
+            <tr>
+                <td>공지</td>
+                <td>
+                    
+                    {% if notice.is_secret == 1 or notice.is_secret == 2%}
+                    <a href="/bbs/{{params.bo_id}}/password/?id={{notice.id}}&page={{query.page}}&field={{query.field}}&type=view">
+                        <i class="fas fa-lock"></i>
+                    {% else %}
+                    <a href="/bbs/{{params.bo_id}}/view/?id={{notice.id}}&page={{query.page}}&field={{query.field}}&value={{query.value}}">
+                    {% endif %}
+                    {{ notice.bo_subject }}
+                    {{ notice.cnt }}
+                </a>
+                </td>
+                <td>
+                    {% if notice.is_secret == 1 or notice.is_secret == 2%}
+                    <a href="/bbs/{{params.bo_id}}/password/?id={{notice.id}}&page={{query.page}}&field={{query.field}}&type=view">
+                        <i class="fas fa-lock"></i>
+                    {% else %}
+                    <a href="/bbs/{{params.bo_id}}/view/?id={{notice.id}}&page={{query.page}}&field={{query.field}}&value={{query.value}}">
+                    {% endif %}
+                    {{ notice.user_name }}</a>
+                </td>
+                <td>{{ notice.read_hit }}</td>
+                <td>{{ notice.regdate }}</td>
+            </tr>
+            {% endfor %}
+            {% set no = (pageData.totalCnt - pageData.skipSize) %}
+            {% for row in pageData.row %}
+            <tr>
+                <td>
+                    {{ no }}</a>
+                </td>
+                <td>
+                    {% if row.is_secret == 1 or row.is_secret == 2%}
+                    <a href="/bbs/{{params.bo_id}}/password/?id={{row.id}}&page={{query.page}}&field={{query.field}}&type=view">
+                        <i class="fas fa-lock"></i>
+                    {% else %}
+                    <a href="/bbs/{{params.bo_id}}/view/?id={{row.id}}&page={{query.page}}&field={{query.field}}&value={{query.value}}">
+                    {% endif %}
+                    {{ row.bo_subject }}
+                    <!-- 댓글 카운팅-->
+                    {% if 0 < row.cnt %}
+                    <sub>- {{ row.cnt }}</sub>
+                    {% endif %}
+                </a>
+                </td>
+                <td>
+                    {% if row.is_secret == 1 or row.is_secret == 2%}
+                    <a href="/bbs/{{params.bo_id}}/password/?id={{row.id}}&page={{query.page}}&field={{query.field}}&type=view">
+                        <i class="fas fa-lock"></i>
+                    {% else %}
+                    <a href="/bbs/{{params.bo_id}}/view/?id={{row.id}}&page={{query.page}}&field={{query.field}}&value={{query.value}}">
+                    {% endif %}
+                    {{ row.user_name }}</a>
+                </td>
+                <td>{{ row.read_hit }}</td>
+                <td>{{ row.regdate }}</td>
+            </tr>
+            {% set no = no -1 %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- 검색폼 시작-->
+    <form name="formSearch" method="get" action="/bbs/{{params.bo_id}}/{{params.type}}" class="form-group">
+        <input type="hidden" name="page" value="1">
+        <table style="margin:0 auto">
+            <tbody>
+                <tr>
+                    <td>검색</td>
+                    <td>
+                        <select name="field" class="form-control">
+                            <option value="bo_subject">제목</option>
+                            <option value="bo_content">내용</option>
+                            <option value="user_id">회원아이디</option>
+                            <option value="user_name">이름</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="text" name="value" value="{{pageData.query.value}}" class="form-control">
+                    </td>
+                    <td><button class="btn btn-primary" type="submit">검색하기</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    </div>
+    <!-- 검색폼 끝 -->
+</div>
+<!-- 로그인 화면 만들기 -->
+{% endblock %}
+{% block script%}
+<!-- 스크립트 시작-->
+<script type="text/javascript">
+    window.onload = () =>{
+        //로그인 오류가 발생할 시 문구 띄우기
+        if ('{{errorMsg}}'!='') {
+            Swal.fire('{{errorMsg}}')
+            .then(result => {
+                history.back();
+            });
+            
+            //alert(new URL(location.href).searchParams.get('loginError'));
+            return;
+        }else{
+            document.getElementById("bo-list").style.display='block';
+        }
+    }
+</script>
+<!-- 스크립트 끝 -->
+{% endblock %}

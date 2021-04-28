@@ -1,0 +1,91 @@
+{% extends './layout.html' %}
+{% block content %}
+
+<div class="content-wrapper">
+    
+    <div class="container">
+        
+        <form name="form" method="post" action="/admin_post/member_update" onsubmit="return formCheck()">
+            <input type="hidden" name="w" id="w" value="{{query.w}}">
+            <input type="hidden" name="page" value="{{query.page}}">
+            <input type="hidden" name="field" value="{{query.field}}">
+            <input type="hidden" name="value" value="{{query.value}}">
+            <input type="hidden" name="type" id="type" value="{% if query.w %}update{% else %}add{% endif %}">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">ID</span>
+                <input type="text" name="user_id" id="user_id" class="form-control" placeholder="아이디를 입력하세요" aria-describedby="basic-addon1" value="{{row.user_id}}" required{% if query.w=="u" %} readonly{% endif %}>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">PASSWORD</span>
+                <input type="password" name="user_password" id="user_password" class="form-control" placeholder="비밀번호를 입력하세요" aria-describedby="basic-addon1" {% if query.w=="" %}required{% endif %}>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">PASSWORD-RE</span>
+                <input type="password" name="user_password_re" id="user_password_re" class="form-control" placeholder="비밀번호를 입력하세요" aria-describedby="basic-addon1"  {% if query.w=="" %}required{% endif %}>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">이름</span>
+                <input type="text" name="user_name" class="form-control" placeholder="이름을 입력하세요" aria-describedby="basic-addon1" required value="{{row.user_name}}">
+            </div>
+            <!-- 사이트 설정에서 설정된대로 보여주기-->
+            
+            {% if siteInfo.user_tel_set !=0 %}
+            <!-- 전화번호-->
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">전화번호</span>
+                <input type="tel" name="user_tel" class="form-control" placeholder="전화번호를 입력하세요" aria-describedby="basic-addon1"{% if siteInfo.user_tel_set == 2 %} required {% endif %} value="{{row.user_tel}}"> 
+            </div>
+            {% endif %}
+            {% if siteInfo.user_mobile_set !=0 %}
+            <!-- 휴대폰-->
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">휴대폰번호</span>
+                <input type="tel" name="user_mobile" class="form-control" placeholder="휴대폰번호를 입력하세요" aria-describedby="basic-addon1"{% if siteInfo.user_mobile_set == 2 %} required {% endif %}  value="{{row.user_mobile}}"> 
+            </div>
+            {% endif %}
+            {% if siteInfo.user_email_set !=0 %}
+            <!-- 휴대폰-->
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">이메일</span>
+                <input type="email" name="user_email" class="form-control" placeholder="이메일을 입력하세요" aria-describedby="basic-addon1"{% if siteInfo.user_email_set == 2 %} required {% endif %}  value="{{row.user_email}}"> 
+            </div>
+            {% endif %}
+            {% if siteInfo.user_addr_set !=0 %}
+            <!-- 우편번호-->
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">우편번호</span>
+                <input type="text" name="user_zip" id="user_zip" class="form-control" placeholder="우편번호 검색을 하세요" aria-describedby="basic-addon1"{% if siteInfo.user_addr_set == 2 %} required {% endif %}  value="{{row.user_zip}}"> 
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" onclick="sample3_execDaumPostcode()">우편번호찾기</button>
+                  </span>
+            </div>
+            <div id="wrap" style="display:none;border:1px solid;width:100%;height:300px;margin:5px 0;position:relative">
+                <img src="//t1.daumcdn.net/postcode/resource/images/close.png" id="btnFoldWrap" style="cursor:pointer;position:absolute;right:0px;top:-1px;z-index:1" onclick="foldDaumPostcode()" alt="접기 버튼">
+            </div>
+            <!-- 주소-->
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">주소</span>
+                <input type="text" name="user_addr1" id="user_addr1" class="form-control" placeholder="주소를 입력하세요" aria-describedby="basic-addon1"{% if siteInfo.user_addr_set == 2 %} required {% endif %} value="{{row.user_addr1}}"> 
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">상세주소</span>
+                <input type="text" name="user_addr2" id="user_addr2" class="form-control" placeholder="주소를 입력하세요" aria-describedby="basic-addon1"{% if siteInfo.user_addr_set == 2 %} required {% endif %}value="{{row.user_addr2}}"> 
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">주소(기타)</span>
+                <input type="text" name="user_addr3" id="user_addr3" class="form-control" placeholder="주소를 입력하세요" aria-describedby="basic-addon1"value="{{row.user_addr3}}"> 
+            </div>
+            
+    
+            {% endif %}
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">
+                    {% if query.w %}정보수정{% else %}회원가입{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+{% endblock %}

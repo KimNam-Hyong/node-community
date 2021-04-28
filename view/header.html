@@ -1,0 +1,35 @@
+<header class="header">
+    
+    <div class="container">
+        <div class="auth-login">
+            <ul>
+                <li>홈</li>
+                {% if user and user.user_id %}
+                <!-- 로그인 후 -->
+                <li><a href="/login/logout">로그아웃</a></li>
+                <li><a href="/join/?w=u">회원정보수정</a></li>
+                {% if 10 <= user.user_level %}
+                <!-- 관리자 모드 -->
+                <li><a href="/admin/" target="_blank">관리자모드</a></li>
+                {% endif %}
+                {% else %}
+                <!-- 로그인 전 -->
+                <li><a href="/login">로그인</a></li>
+                <li><a href="/join">회원가입</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="header-menu">
+            {% if 0 < menuRow.length %}
+            <ul>
+                {% for row in menuRow%}
+                <li><a href="{{row.me_url}}" target="{{row.me_target}}">{{row.me_name}}</a></li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <div>준비중입니다.</div>
+            {% endif %}
+
+        </div>
+    </div>
+</header>

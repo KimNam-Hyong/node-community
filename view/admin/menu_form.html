@@ -1,0 +1,63 @@
+{% extends './layout.html' %}
+{% block content %}
+
+<div class="content-wrapper">
+    <div class="container">
+        <form name="form" method="post" action="/admin_post/menu_update" onsubmit="return formCheck()">
+            <input type="hidden" name="w" value="{{query.w}}"/>
+            <input type="hidden" name="id" value="{{row.id}}"/>
+            <input type="hidden" name="type" value="{% if query.w == '' %}add{% else %}update{% endif %}"/>
+            {% if mRow.me_name %}
+            <h2>{{mRow.me_name}} 하위분류</h2>
+            {% endif %}
+            
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Code</span>
+                <input type="text" name="me_code" id="me_code" class="form-control" placeholder="" aria-describedby="basic-addon1" value="{{me_code}}" readonly>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">아이디</span>
+                <input type="text" name="me_id" id="me_id" class="form-control" placeholder="" aria-describedby="basic-addon1" value="{{row.me_id}}" required>
+                <span class="input-group-addon" id="basic-addon1"><a type="button" id="menu-find">찾기</a></span>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">url</span>
+                <input type="text" name="me_url" id="me_url" class="form-control" placeholder="" aria-describedby="basic-addon1" value="{{row.me_url}}" required>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">메뉴명</span>
+                <input type="text" name="me_name" id="me_name" class="form-control" placeholder="" aria-describedby="basic-addon1" value="{{row.me_name}}" required>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">타겟</span>
+                <select name="me_target" class="form-control">
+                    <option value="_self"{% if row.me_target == '_self' %} selected {% endif%}>_self</option>
+                    <option value="_blank"{% if row.me_target == '_blank' %} selected {% endif%}>_blank</option>
+                    <option value="_top"{% if row.me_target == '_top' %} selected {% endif%}>_top</option>
+                    <option value="_parent"{% if row.me_target == '_parent' %} selected {% endif%}>_parent</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">정렬순서</span>
+                <input type="number" name="me_order" id="me_order" class="form-control" placeholder="" aria-describedby="basic-addon1" value="{{row.me_order}}" required>
+            </div>
+            <!--
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">출력여부</span>
+                <input type="checkbox" name="me_order" value="1"{% if row.is_view == 1 %} checked {% endif %} id="me_order"><label for="me_order">출력</label>
+            </div>-->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">확인</button>
+                <a href="/admin/menu_setting">목록</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    document.querySelector('#menu-find').addEventListener("click",function(){
+        window.open("/admin/popup_menu_form","popup","width=800,height=600,scrollbars=yes");
+    });
+</script>
+{% endblock %}

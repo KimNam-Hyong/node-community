@@ -1,0 +1,42 @@
+{
+    "name": "community",
+    "version": "1.0.0",
+    "description": "\"오픈 커뮤니티 사이트\"",
+    "main": "app.js",
+    "scripts": {
+        "start": "nodemon app.js",
+        "test": "jest"
+    },
+    "author": "\"Kim\"",
+    "license": "ISC",
+    "dependencies": {
+        "axios": "^0.21.1",
+        "bcrypt": "^5.0.1",
+        "connect-redis": "^5.1.0",
+        "cookie-parser": "^1.4.5",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "express-session": "^1.17.1",
+        "ip": "^1.1.5",
+        "locutus": "^2.0.14",
+        "mime": "^1.6.0",
+        "morgan": "^1.10.0",
+        "multer": "^1.4.2",
+        "mysql2": "^2.2.5",
+        "node-thumbnail": "^0.15.0",
+        "npm": "^7.10.0",
+        "nunjucks": "^3.2.3",
+        "passport": "^0.4.1",
+        "passport-local": "^1.0.0",
+        "redis": "^3.1.2",
+        "sequelize": "^6.6.2",
+        "sequelize-cli": "^6.2.0",
+        "socket.io": "^4.0.1",
+        "sweetalert2": "^10.16.0",
+        "winston": "^3.3.3"
+    },
+    "devDependencies": {
+        "jest": "^26.6.3",
+        "nodemon": "^2.0.7"
+    }
+}

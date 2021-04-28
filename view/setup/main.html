@@ -1,0 +1,87 @@
+{% extends './layout.html' %}
+{% block content %}
+<div class="col-lg-12 col-md-12 col-xs-12 text-center">
+    <h3>사이트관리자</h3>
+</div>
+<form name="form" method="post" action="/setup" onsubmit="return goSetup()">
+<table class="table">
+    <tbody>
+        <tr>
+            <th colspan="2" style="background-color: beige;">사이트 관리자 정보 입력</th>
+        </tr>
+        <tr>
+            <th>아이디</th>
+            <td><input type="text" name="user_id" value="admin" class="form-control" required></td>
+        </tr>
+        <tr>
+            <th>이름</th>
+            <td><input type="text" name="user_name" value="관리자" class="form-control" required></td>
+        </tr>
+        <tr>
+            <th>비밀번호</th>
+            <td><input type="password" name="user_password" value="" class="form-control" required></td>
+        </tr>
+        <tr>
+            <th>비밀번호 재확인</th>
+            <td><input type="password" name="user_password_re" value="" class="form-control" required></td>
+        </tr>
+    </tbody>
+</table>
+<table class="table">
+    <tbody>
+        <tr>
+            <th colspan="2" style="background-color: beige;">슈퍼관리자 정보 입력</th>
+        </tr>
+        <tr>
+            <th>아이디</th>
+            <td><input type="text" name="super_id" value="lets080" class="form-control" required></td>
+        </tr>
+        
+        <tr>
+            <th>비밀번호</th>
+            <td><input type="password" name="super_password" value="" class="form-control" required></td>
+        </tr>
+        <tr>
+            <th>비밀번호 재확인</th>
+            <td><input type="password" name="super_password_re" value="" class="form-control" required></td>
+        </tr>
+        
+    </tbody>
+</table>
+<div class="col-lg-12 col-md-12 col-xs-12 text-center">
+    <button type="submit" class="btn btn-primary">Setup</button>
+</div>
+</form>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    function goSetup(){
+        const form=document.form;
+        if(form.user_id.value.trim()==""){
+            alert("아이디를 입력하세요");
+            return false;
+        }
+        if(form.user_password.value.trim()==""){
+            alert("비밀번호를 입력하세요");
+            form.user_password.focus();
+            return false;
+        }
+        if(form.user_password.value!=form.user_password_re.value){
+            alert("비밀번호가 맞지 않습니다. 다시 확인해 주세요");
+            form.user_password_re.focus();
+            return false;
+        }
+        if(form.user_name.value.trim()==""){
+            alert("이름을 입력하세요");
+            form.user_name.focus();
+            return false;
+        }
+
+        if(form.super_id.value==""){
+            alert("슈퍼관리자 아이디를 입력하세요");
+            form.super_id.focus();
+            return false;
+        }
+    }
+</script>
+{% endblock %}

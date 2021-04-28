@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"/>
+    
+   
+    <!-- iCheck -->
+    <link rel="stylesheet" href="/css/icheck-bootstrap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="/css/adminlte.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="/css/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <!-- 합쳐지고 최소화된 최신 CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">  
+
+    <!-- 부가적인 테마 -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+     <!-- jQuery -->
+     <script src="/js/jquery.min.js"></script>
+     <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+     <script src="https://cdn.ckeditor.com/ckeditor5/27.0.0/classic/ckeditor.js"></script>
+  </head>
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        {% include './header.html' %}
+        {% block content%}
+        {% endblock %}
+        
+        
+        {% include './footer.html' %}
+        {% block script %}
+        {% endblock %}
+       
+        <!-- jQuery UI 1.11.4 -->
+        <script src="/js/jquery-ui.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="/js/bootstrap.bundle.min.js"></script>
+        <script src="/js/adminlte.min.js"></script>
+        <script src="/js/demo.js"></script>
+    </div>
+  </body>
+</html>

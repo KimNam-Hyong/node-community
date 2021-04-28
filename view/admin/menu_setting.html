@@ -1,0 +1,74 @@
+{% extends './layout.html' %}
+{% block content %}
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div style="width:100%;text-align:right"><a href="/admin/menu_form/?w=">1차 메뉴추가</a></div>
+    </div>
+    <form name="form_list" method="post" action="/admin_post/menu_update">
+    <input type="hidden" name="type" value="">
+    <input type="hidden" name="length" value="">
+    <input type="hidden" name="me_code" value="">
+    <table class="table table-border" style="margin:20px">
+        <thead>
+            <tr>
+                <th>코드명</th>
+                <th>아이디</th>
+                <th>메뉴명</th>
+                <th>url주소</th>
+                <th>관리</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in row %}
+            <tr>
+                <td>
+                    
+                    {% for a in range(0,(row.me_code.length/2)-1) %}
+                    &nbsp;
+                    {% endfor %}
+                    {{row.me_code}}
+                </td>
+                <td>
+                    {% for a in range(0,(row.me_code.length/2)-1) %}
+                    &nbsp;
+                    {% endfor %}
+                    {{row.me_id}}
+                </td>
+                <td>{{row.me_name}}</td>
+                <td>{{row.me_url}}</td>
+                <td>
+                    <a href="{{row.me_url}}" target="_blank">보기</a> / 
+                    <a href="/admin/menu_form/?w=u&id={{row.id}}">수정</a> / 
+                    <a href="javascript:;" onclick="menuRemove('{{row.me_code}}','{{row.me_code.length}}')">삭제</a> /
+                    <a href="/admin/menu_form/?w=&me_code={{row.me_code}}"> 추가하기</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </form>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+
+    function menuRemove(id,length){
+        Swal.fire({
+                title:`이 메뉴를 삭제하시겠습니까?`,
+                showCancelButton:true,
+                confirmButtonColor:'#3085d6',
+                cancelButtonColor:'#d33'
+         }).then((result)=>{
+            if (result.isConfirmed){
+                var code_form = document.getElementsByName("me_code")[0];
+                var length_form = document.getElementsByName("length")[0];
+                code_form.value=id;
+                length_form.value=length;
+                const form=document.form_list;
+                form.type.value="delete";//모드 변경
+                form.submit();   
+            }
+         });
+    }
+</script>
+{% endblock %}

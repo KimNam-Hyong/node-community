@@ -1,0 +1,44 @@
+{% extends './layout.html' %}
+{% block content %}
+<div class="content-wrapper">
+    <div class="container">
+        <form name="form" method="post" action="/admin_post/content_update" onsubmit="return formCheck()">
+            <input type="hidden" name="w" value="{{query.w}}">
+            <input type="hidden" name="type" id="type" value="{% if query.w %}update{% else %}add{% endif %}">
+            <input type="hidden" name="id" value="{{row.id}}">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">아이디</span>
+                <input type="text" name="co_id" id="co_id" class="form-control" placeholder="내용 아이디를 입력하세요" required aria-describedby="basic-addon1" value="{{row.co_id}}" required{% if query.w=="u" %} readonly{% endif %}>
+            </div>
+            <div>
+                <span style="color:red">사이트 주소에 표시하기 위한 주소이니 반드시 입력해 주세요</span>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">제목</span>
+                <input type="text" name="subject" id="subject" class="form-control" placeholder="제목을 입력하세요" required aria-describedby="basic-addon1" value="{{row.subject}}" required>
+            </div>
+
+            
+            <div class="input-group" >
+                <span class="input-group-addon" id="basic-addon1">내용</span>
+                <textarea name="content" id="content" class="form-control" rows="10">{{row.content}}</textarea>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">
+                    {% if query.w %}수정하기{% else %}추가하기{% endif %}
+                </button>
+                {% if query.w %}
+                    <a href="/content/{{params.co_id}}/" class="btn btn-success" target="_blank">내용보기</a>
+                {% endif %}
+                <a href="/admin/content_list/" class="btn btn-warning">목록</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+    
+</script>
+{% endblock %}
+            

@@ -1,0 +1,99 @@
+<!-- Navbar -->
+<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" style="color:#fff" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <a href="/admin"  style="color:#fff" class="nav-link">관리자모드</a>
+      </li>
+    </ul>
+
+    <!-- Right navbar links -->
+    
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link"  style="color:#fff" href="/login/logout" role="button">
+          <i class="fa fa-angle-right" aria-hidden="true"></i>로그아웃
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="/admin" class="brand-link">
+      <span class="brand-text font-weight-light">관리자</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+     
+
+      
+
+      <!-- 메뉴시작 -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <!--<li class="nav-item menu-open">-->
+          <li class="nav-item" style="display:{% if user.user_level == 10%}none{% endif %}">
+            <a href="/admin/site_setup" class="nav-link active">
+              <p>
+                사이트 설정
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="/admin/member_list" class="nav-link">
+              <p>
+                회원관리
+                <!--<span class="right badge badge-danger">New</span>-->
+              </p>
+            </a>
+          </li>
+          <li class="nav-item"  style="display:{% if user.user_level == 10%}none{% endif %}">
+            <a href="/admin/board_setting" class="nav-link">
+              <p>
+                게시판 설정
+              </p>
+            </a>
+          </li>
+          <!--<li class="nav-item">
+            <a href="#" class="nav-link">
+              <p>
+                게시판 관리
+              </p>
+            </a>
+          </li>-->
+          <li class="nav-item"  style="display:{% if user.user_level == 10%}none{% endif %}">
+            <a href="/admin/menu_setting/" class="nav-link">
+              <p>
+                메뉴관리
+              </p>
+            </a>
+          </li>
+          <li class="nav-item"  style="display:{% if user.user_level == 10%}none{% endif %}">
+            <a href="/admin/content_list" class="nav-link">
+              <p>
+                내용관리
+              </p>
+            </a>
+          </li>
+          <!--<li class="nav-item">
+            <a href="#" class="nav-link">
+              <p>
+                접속자통계
+              </p>
+            </a>
+          </li>-->
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

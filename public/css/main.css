@@ -1,0 +1,81 @@
+body{
+    padding:0;
+    margin:0;
+}
+.header{
+    width:100%;
+    float:left;
+    background-color:#fff;
+    height:80px;
+    border-bottom:1px solid #ccc;
+}
+.header .auth-login{
+    float:right;
+
+}
+.header .auth-login ul li{
+    list-style: none;
+    float:left;
+    padding:5px;
+}
+.header .header-menu{
+    float:left;
+    width:100%;
+}
+
+.form-login{
+    margin-top:250px;
+
+}
+.form-login input{
+    margin:10px;
+}
+.form-login button{
+    margin-top:20px
+}
+
+/* 게시판 관련 */
+.board-info{
+    float:left;
+    margin-top:20px;
+    width:100%;
+    border-top:2px solid #000;
+    border-bottom:1px solid #ccc;
+}
+li{
+    list-style:none;
+}
+
+.board-info ul li {
+    float:left;
+    padding:20px;
+    list-style:none;
+}
+.board-info ul li:first-child{
+    width:20%;
+}
+.board-info ul li:nth-child(2){
+    width:40%;
+    text-align:center;
+}
+.board-info ul li:nth-child(3){
+    width:30%;
+    text-align:center;
+}
+.board-info ul li:last-child{
+    text-align:right;
+    width:10%;
+}
+
+.board-file{
+    margin-top:10px;
+    background-color:rgb(216, 216, 216);
+    padding:10px;
+}
+.board-file li{
+    border-bottom:1px solid #000;
+}
+.header ul li{
+    float:left;
+    width:100px;
+}

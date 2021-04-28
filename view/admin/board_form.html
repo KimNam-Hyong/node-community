@@ -1,0 +1,171 @@
+{% extends './layout.html' %}
+{% block content %}
+<div class="content-wrapper">
+    <div class="container">
+        <form name="form" method="post" action="/admin_post/board_update" onsubmit="return formCheck()">
+            <input type="hidden" name="w" value="{{query.w}}">
+            <input type="hidden" name="page" value="{{query.page}}">
+            <input type="hidden" name="field" value="{{query.field}}">
+            <input type="hidden" name="value" value="{{query.value}}">
+            <input type="hidden" name="type" id="type" value="{% if query.w %}update{% else %}add{% endif %}">
+            <ul class="tab-menu" id="board-set1" style="margin-top:20px">
+                <li class="active" onclick="location.href='#board-set1';">게시판 기본설정</li>
+                <li onclick="location.href='#board-set2';">게시판권한설정</li>
+                <li onclick="location.href='#board-set3';">게시판기능설정</li>
+                <li onclick="location.href='#board-set4';">기타설정</li>
+            </ul>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">게시판 아이디</span>
+                <input type="text" name="bo_id" id="bo_id" class="form-control" placeholder="게시판 아이디를 입력하세요" required aria-describedby="basic-addon1" value="{{row.bo_id}}" required{% if query.w=="u" %} readonly{% endif %}>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">게시판명</span>
+                <input type="text" name="bo_name" id="bo_name" class="form-control" placeholder="게시판명을 입력하세요" required aria-describedby="basic-addon1" value="{{row.bo_name}}" required>
+            </div>
+
+            <ul class="tab-menu" id="board-set2" style="margin-top:20px">
+                <li onclick="location.href='#board-set1';">게시판 기본설정</li>
+                <li class="active" onclick="location.href='#board-set2';">게시판권한설정</li>
+                <li onclick="location.href='#board-set3';">게시판기능설정</li>
+                <li onclick="location.href='#board-set4';">기타설정</li>
+            </ul>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">글쓰기 등록 권한</span>
+                <select name="bo_write_level" class="form-control user-level" id="bo_write_level">
+                {% for levels in levels.levels %}
+                    <option value="{{levels.level}}"{% if row.bo_write_level == levels.level %} selected {% endif%}>{{levels.text}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">댓글 권한</span>
+                <select name="bo_comment_level" class="form-control user-level" id="bo_comment_level">
+                {% for levels in levels.levels %}
+                    <option value="{{levels.level}}"{% if row.bo_comment_level == levels.level %} selected {% endif%}>{{levels.text}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">목록 권한</span>
+                <select name="bo_list_level" class="form-control user-level" id="bo_list_level">
+                {% for levels in levels.levels %}
+                    <option value="{{levels.level}}"{% if row.bo_list_level == levels.level %} selected {% endif %}>{{levels.text}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">상세보기 권한</span>
+                <select name="bo_view_level" class="form-control user-level" id="bo_view_level">
+                {% for levels in levels.levels %}
+                    <option value="{{levels.level}}"{% if row.bo_view_level == levels.level %} selected {% endif %}>{{levels.text}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">삭제 권한</span>
+                <select name="bo_delete_level" class="form-control user-level" id="bo_list_level">
+                {% for levels in levels.levels %}
+                    <option value="{{levels.level}}"{% if row.bo_delete_level == levels.level %} selected {% endif %}>{{levels.text}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">업로드 권한</span>
+                <select name="bo_upload_level" class="form-control user-level" id="bo_upload_level">
+                {% for levels in levels.levels %}
+                    <option value="{{levels.level}}"{% if row.bo_upload_level == levels.level %} selected {% endif %}>{{levels.text}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">다운로드 권한</span>
+                <select name="bo_download_level" class="form-control user-level" id="bo_download_level">
+                {% for levels in levels.levels %}
+                    <option value="{{levels.level}}"{% if row.bo_download_level == levels.level %} selected {% endif %}>{{levels.text}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <ul class="tab-menu" id="board-set3" style="margin-top:20px">
+                <li onclick="location.href='#board-set1';">게시판 기본설정</li>
+                <li onclick="location.href='#board-set2';">게시판권한설정</li>
+                <li class="active" onclick="location.href='#board-set3';">게시판기능설정</li>
+                <li onclick="location.href='#board-set4';">기타설정</li>
+            </ul>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">게시판 스킨</span>
+                
+                <select name="bo_skin_path" class="form-control">
+                    {% for path in boardSkin %}
+                    <option value="{{path}}"{% if row.bo_skin_path == path %} selected {% endif %}>{{path}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">목록수</span>
+                <input type="text" name="bo_list_su" id="bo_list_su" class="form-control" placeholder="목록 수를 입력하세요" aria-describedby="basic-addon1" value="{% if query.w %}{{row.bo_list_su}}{% else %}20{% endif %}" required>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">파일 업로드 수</span>
+                <input type="text" name="bo_file_ea" id="bo_file_ea" class="form-control" placeholder="파일업로드 수를 입력하세요" aria-describedby="basic-addon1" value="{% if query.w %}{{row.bo_file_ea}}{% else %}2{% endif %}">
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">파일  용량</span>
+                <input type="text" name="bo_file_size" id="bo_file_size" class="form-control" placeholder="파일 용량을 입력하세요" aria-describedby="basic-addon1" value="{% if query.w %}{{row.bo_file_size}}{% else %}5242880{% endif %}" required>
+            </div>
+            (byte 용량으로 맞춰주세요)
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">PC버전 갤러리 수</span>
+                <input type="text" name="bo_gallery_su" id="bo_gallery_su" class="form-control" placeholder="파일업로드 수를 입력하세요" aria-describedby="basic-addon1" value="{% if query.w %}{{row.bo_gallery_su}}{% else %}4{% endif %}" required>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">공지사항 설정</span>
+                <select name="is_notice" class="form-control">
+                    <option value="0"{% if row.is_notice == 0 %} selected {% endif %}>사용안함</option>
+                    <option value="1"{% if row.is_notice == 1 %} selected {% endif %}>사용함</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">공지사항 수</span>
+                <input type="text" name="bo_notice_su" value="{% if query.w %}{{row.bo_notice_su}}{% else %}0{% endif %}" class="form-control">
+            </div>
+            (목록 상단에 보여줄 공지사항 수를 입력하세요)
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">비밀글설정</span>
+                <select name="is_secret" class="form-control">
+                    <option value="0"{% if row.is_secret == 0 %} selected {% endif %}>사용안함</option>
+                    <option value="1"{% if row.is_secret == 1 %} selected {% endif %}>선택</option>
+                    <option value="2"{% if row.is_secret == 2 %} selected {% endif %}>자동</option>
+                </select>
+            </div>
+            (갤러리 목록에서 한줄에 몇개를 보여줄 것인지 입력하시면 됩니다.)
+            <ul class="tab-menu" id="board-set4" style="margin-top:20px">
+                <li onclick="location.href='#board-set1';">게시판 기본설정</li>
+                <li onclick="location.href='#board-set2';">게시판권한설정</li>
+                <li onclick="location.href='#board-set3';">게시판기능설정</li>
+                <li class="active" onclick="location.href='#board-set4';">기타설정</li>
+            </ul>
+           
+            {% for i in range(1,21) %}
+            {% set j = i -1 %}
+            
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">기타사항{{i}}</span>
+                <input type="text" name="bo_ext{{i}}_title" value="{{bo_ext_titles[j]}}" class="form-control">
+            </div>
+            {% endfor %}
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">
+                    {% if query.w %}수정하기{% else %}추가하기{% endif %}
+                </button>
+                {% if query.w %}
+                    <a href="/bbs/{{params.bo_id}}/list" class="btn btn-success" target="_blank">게시판보기</a>
+                {% endif %}
+                <a href="/admin/board_setting/" class="btn btn-warning">목록</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+{% endblock %}
+            

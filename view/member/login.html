@@ -1,0 +1,32 @@
+{% extends '../layout.html' %}
+{% block content %}
+<!-- 로그인 화면 만들기 -->
+<div class="container">
+    <div class="text-center"></div>
+    <form name="form" method="post" action="/login/login" class="form-login">
+        <input type="hidden" name="url" value="">
+        <input type="text" name="user_id" value="" class="form-control" placeholder="아이디를 입력하세요" required>
+        <input type="password" name="user_password" class="form-control" value="" placeholder="비밀번호를 입력하세요" required>
+        <div id="error-msg"></div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-lg btn-success">로그인</button>
+        </div>
+        
+    </form>
+</div>
+<!-- 로그인 화면 만들기 -->
+{% endblock %}
+{% block script%}
+<!-- 스크립트 시작-->
+<script type="text/javascript">
+    window.onload = () =>{
+        //로그인 오류가 발생할 시 문구 띄우기
+        if (new URL(location.href).searchParams.get('err_code')) {
+            document.getElementById("error-msg").innerHTML=`<font color=red>${new URL(location.href).searchParams.get('loginError')}</font>`;
+            //alert(new URL(location.href).searchParams.get('loginError'));
+            return;
+        }
+    }
+</script>
+<!-- 스크립트 끝 -->
+{% endblock %}

@@ -1,0 +1,212 @@
+{% extends './layout.html' %}
+{% block content %}
+<div class="content-wrapper">    
+    <div class="container-fluid" style="padding:20px">
+        <form name="form_list" method="post" action="/admin_post/board_update">
+        <input type="hidden" name="page" value="{{pageData.page}}">
+        <input type="hidden" name="field" value="{{pageData.field}}">
+        <input type="hidden" name="value" value="{{pageData.value}}">
+        <input type="hidden" name="type" value="">
+        <input type="hidden" name="bo_skin_path2" value="">
+        <input type="hidden" name="bo_id" value="">
+        <div class="col-xs-12 col-md-12 col-lg-12" style="text-align:right">
+            <a class="btn btnprimary" href="/admin/board_form/add">게시판추가</a>
+        </div>
+        <table class="table table-border">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" name="chk" id="chk"></th>
+                    <th>번호</th>
+                    <th>아이디</th>
+                    <th>게시판명</th>
+                    <th>스킨</th>
+                    <th>관리</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set no = (pageData.totalCnt - pageData.skipSize) %}
+                {% for row in pageData.row %}
+                <tr>
+                    <td><input type="checkbox" name="chk_id" id="chk_id" value="{{row.bo_id}}"></td>
+                    <td>{{ no }}</td>
+                    <td>{{ row.bo_id }}</td>
+                    <td>{{ row.bo_name }}</td>
+                    <td>
+                        <select name="bo_skin_path" class="form-control user-level" id="user_level">
+                        {% for path in boardSkin %}
+                            <option value="{{path}}"{% if row.bo_skin_path==path %} selected{% endif %}>{{path}}</option>
+                        {% endfor %}
+                        </select>
+                    </td>
+                    
+                    <td>
+                        <a href="/admin/board_form/{{row.bo_id}}/?w=u&page={{pageData.page}}&field={{pageData.query.field}}&value={{pageData.query.value}}">수정</a>/ 
+                        <a href="javascript:;" onclick="boardRemove('{{row.bo_name}}','{{row.bo_id}}')">삭제</a>/
+                        <a href="/bbs/{{row.bo_id}}/list" target="blank">보기</a>
+                    </td>
+                </tr>
+                {% set no = no -1 %}
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <div class="text-center col-lg-12 col-xs-12 col-md-12">
+            <div style="float:left;width:200px">
+                <button class="btn btn-primary" type="button" id="choiceEditor">선택수정</button> <button class="btn btn-danger" type="button" id="choiceDelete">선택삭제</button>
+            </div>
+        </form>            
+        <!-- 검색폼 시작-->
+        <form name="formSearch" method="get" action="/admin/board_setting" class="form-group">
+            <input type="hidden" name="page" value="1">
+            <table style="margin:0 auto">
+                <tbody>
+                    <tr>
+                        <td>검색</td>
+                        <td>
+                            <select name="field" class="form-control">
+                                <option value="bo_id">게시판아이디</option>
+                                <option value="bo_name">게시판명</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text" name="value" value="{{pageData.query.value}}" class="form-control">
+                        </td>
+                        <td><button class="btn btn-primary" type="submit">검색하기</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+        </div>
+        <!-- 검색폼 끝 -->
+        <div class="text-center">
+        
+        <nav>
+            
+            <ul class="pagination">
+               
+                {% if 1 < pageData.pageStart %}
+                <li>
+                  <a href="?page={{pageData.pageStart - 10 }}&field={{pageData.query.field}}&value={{pageData.query.value}}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+                {% endif %}
+                
+                {% for page in range(pageData.pageStart-1,pageData.pageEnd) %}
+                {% if page < pageData.pageTotal %}
+                <li class="{% if page+1 == pageData.page==1  %}active{% endif %}"><a href="?page={{page+1}}&field={{pageData.query.field}}&value={{pageData.query.value}}">{{page+1}}</a></li>
+                {% endif %}
+                {% endfor %}
+                
+                {% if pageData.pageEnd < pageData.pageTotal %}
+                <li>
+                  <a href="?page={{pageData.pageEnd+1}}&field={{pageData.query.field}}&value={{pageData.query.value}}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+//전체선택
+    document.getElementById("chk").addEventListener("click",function(e){
+        for(var i=0;i< document.getElementsByName("chk_id").length;i++){
+            document.getElementsByName("chk_id")[i].checked=document.getElementById("chk").checked;
+        }
+    });
+    //선택수정
+    document.getElementById("choiceEditor").addEventListener("click",function(e){
+        isCheck=isChecks();
+        if(isCheck==false){
+            Swal.fire('체크박스 하나 이상 체크가 되어야 합니다.');
+        }else{
+            Swal.fire({
+                title:'선택하신 게시판을 변경하시겠습니까?',
+                showCancelButton:true,
+                confirmButtonColor:'#3085d6',
+                cancelButtonColor:'#d33'
+            }).then((result) => {
+                var chk_id = document.getElementsByName("chk_id");
+                var bo_skin_path = document.getElementsByName("bo_skin_path");
+                var bo_skin_path2 = document.getElementsByName("bo_skin_path2");
+                
+                for(var i=0;i<chk_id.length;i++){
+                    if(chk_id[i].checked){
+                        bo_skin_path2[0].value=bo_skin_path[i].value;
+                    }
+                }
+                
+                if ( result.isConfirmed){
+                    const form=document.form_list;
+                    form.type.value="list_update";//모드 변경 
+                    form.submit();      
+                }else{
+                    Swal.fire('변경을 취소하였습니다.');
+                }
+            });
+        }
+    });
+    document.getElementById("choiceDelete").addEventListener("click",function(e){
+        isCheck=isChecks();
+        if(isCheck==false){
+            Swal.fire('체크박스 하나 이상 체크가 되어야 합니다.');
+        }else{
+            Swal.fire({
+                title:'선택하신 게시판들을 삭제하시겠습니까? 삭제하시면 db복구는 불가능합니다.',
+                showCancelButton:true,
+                confirmButtonColor:'#3085d6',
+                cancelButtonColor:'#d33'
+            }).then((result) => {
+                if ( result.isConfirmed){
+                    const form=document.form_list;
+                    form.type.value="list_delete";//모드 변경
+                    form.submit();      
+                }else{
+                    Swal.fire('삭제를 취소하였습니다.');
+                }
+            });
+        }
+    });
+    //체크박스 체크했는지 안 했는지 여부 묻기
+    function isChecks(){
+        var chk_id = document.getElementsByName("chk_id");
+        var isCheck=false;
+        for(var i=0;i<chk_id.length;i++){
+            if(chk_id[i].checked){
+                isCheck=true;
+                break;
+            }else{
+
+            }
+        }
+        return isCheck;
+    }
+    function boardRemove(bo_name,bo_id){
+        Swal.fire({
+                title:`${bo_name}게시판을 삭제하시겠습니까? 삭제하시면 db 복구는 불가능합니다.`,
+                showCancelButton:true,
+                confirmButtonColor:'#3085d6',
+                cancelButtonColor:'#d33'
+         }).then((result)=>{
+            if ( result.isConfirmed){
+                var bo_id_form = document.getElementsByName("bo_id")[0];
+                bo_id_form.value=bo_id;
+                const form=document.form_list;
+                form.type.value="delete";//모드 변경
+                form.submit();   
+            }
+         });
+    }
+   //등급 변경시 체크박스에 체크가 되게
+   $(function(){
+    $(".user-level").change(function(){
+        $(this).parent().parent().find("input[type=checkbox]").prop("checked",true);
+    })
+   });
+</script>
+{% endblock %}

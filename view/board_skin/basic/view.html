@@ -1,0 +1,159 @@
+{% extends '../../layout.html' %}
+{% block content %}
+<style>
+    #bo-list{display:none}
+</style>
+<!-- 로그인 화면 만들기 -->
+<div class="container" id="bo-view">
+    <div class="board-info">
+        <ul>
+            <li>{{row.user_name}}</li>
+            <li>{{row.bo_subject}}</li>
+            <li>날짜{{row.regdate}}</li>
+            <li>조회수 {{row.read_hit}}</li>
+        </ul>
+    </div>
+    <!-- 파일첨부-->
+    <div class="board-content">
+        {% for file in fileRow %}
+        {% if 'image' in file.mimetype %}
+        <img src="/upload/{{file.file_name}}" width="100%">
+        {% endif %}
+        {% endfor %}
+        {{row.bo_content | escape | nl2br}}
+    </div>
+    <!-- 파일 다운로드 -->
+    {% 
+        if bRow.bo_download_level <= user_level
+    %}
+    <ul class="board-file">
+        {% for file in fileRow %}
+        <li>파일 {{loop.index }} :<a href="/bbs/download/{{file.file_no}}/{{query.id}}">{{file.file_name}}</a> - 다운로드 수 : {{file.file_download_su}}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="text-center">
+        <a href="/bbs/{{params.bo_id}}/list/?page={{query.page}}&field={{query.field}}&value={{query.value}}" class="btn btn-primary">목록보기</a>
+        {% if row.user_id == user.user_id or 9 < user.user_level%}
+        <!-- 회원이거나 또는 관리자 일때 -->
+        <a href="/bbs/{{params.bo_id}}/write/?id={{row.id}}&page={{query.page}}&field={{query.field}}&value={{query.value}}" class="btn btn-primary">수정하기</a>
+        <a href="javascript:;" onclick="boardDelete('{{row.id}}')" class="btn btn-primary">삭제하기</a>
+        {% elif row.user_id == null or row.user_id == '' %}
+        <!-- 비회원일 때-->
+        <a href="/bbs/{{params.bo_id}}/password/?id={{row.id}}&page={{query.page}}&field={{query.field}}&value={{query.value}}&type=modification" class="btn btn-primary">수정하기</a>
+        <a href="/bbs/{{params.bo_id}}/password/?id={{row.id}}&page={{query.page}}&field={{query.field}}&value={{query.value}}&type=remove" class="btn btn-primary">삭제하기</a>
+        {% endif %}
+        <form name="form_delete" method="post" action="/bbs_post/board_remove">
+            <input type="hidden" name="bo_id" value="{{params.bo_id}}">
+            <input type="hidden" name="id" value="{{query.id}}">
+            <input type="hidden" name="page" value="{{query.page}}">
+            <input type="hidden" name="field" value="{{query.field}}">
+            <input type="hidden" name="value" value="{{query.value}}">
+        </form>
+    </div>
+    <!-- 댓글-->
+    {% if bRow.bo_comment_level <= user_level %}
+    <div class="comment-form">
+        <form name="form" method="post" action="/bbs_post/comment_write" id="form-comment">
+            <input type="hidden" name="bo_id" value="{{params.bo_id}}">
+            <input type="hidden" name="f_bbs_id" value="{{query.id}}">
+            <input type="hidden" name="page" value="{{query.page}}">
+            <input type="hidden" name="field" value="{{query.field}}">
+            <input type="hidden" name="value" value="{{query.value}}">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>이름</th>
+                        <td><input type="text" name="user_name" value="" class="form-control" required></td>
+                        <th>비밀번호</th>
+                        <td><input type="text" name="co_password" value="" class="form-control" required></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <textarea name="co_comment" class="form-control"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>비밀댓글</th>
+                        <td><input type="checkbox" name="is_secret" value="1" id="is_secret"><label for="is_secret">비밀글</label></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><button class="btn btn-primary">코멘트 등록하기</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+    <!-- 댓글 목록 -->
+    <div class="comment-list-table">
+        <table class="table">
+            <tbody id="comment-list">
+                {% for coRow in commentRow %}
+                <tr>
+                    <td>{{coRow.user_name}}</td>
+                    <td>{{coRow.co_comment}}</td>
+                    <td>{{coRow.regdate}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- 댓글 목록 끝 -->
+    {% endif %}
+</div>
+<!-- 로그인 화면 만들기 -->
+{% endblock %}
+{% block script%}
+<script src="/socket.io/socket.io.js"></script>
+<!-- 스크립트 시작-->
+<script type="text/javascript">
+    const socket = io.connect('http://localhost:4001/comment',{
+        path:'/socket.io'
+    });
+    //누군가 댓글을 쓰면 실시간으로 받을 수 있게
+    socket.on('list',function(data){
+        console.log(data);
+        var strHtml = "<tr>";
+            strHtml += "<td>"+data.user_name+"</td>";
+            strHtml += "<td>"+data.co_comment+"</td>";
+            strHtml += "<td>"+data.regdate+"</td></tr>";
+        var prevHtml=document.getElementById("comment-list").innerHTML;
+        document.getElementById("comment-list").innerHTML=strHtml+prevHtml;
+    });
+    
+
+    window.onload = () =>{
+        const param = {
+            bo_id:"{{params.bo_id}}",
+            id:"{{query.id}}"
+        }
+        
+        socket.emit('join',param);
+        //로그인 오류가 발생할 시 문구 띄우기
+        if ('{{errorMsg}}'!='') {
+            Swal.fire('{{errorMsg}}')
+            .then(result => {
+                history.back();
+            });
+            //alert(new URL(location.href).searchparamss.get('loginError'));
+            return;
+        }else{
+            document.getElementById("bo-view").style.display='block';
+        }
+    }
+    //게시판 삭제하기
+    function boardDelete(bo_id){
+        Swal.fire({
+            title:'이 게시판을 삭제하게 되면 댓글과 파일도 같이 삭제됩니다. 그래도 삭제하시겠습니까?',
+            showCancelButton:true,
+            confirmButtonColor:'#3085d6',
+            cancelButtonColor:'#d33'
+        }).then((result) => {
+            const form = document.form_delete;
+            form.method="post";
+            form.submit();
+        });
+    }
+</script>
+<!-- 스크립트 끝 -->
+{% endblock %}
