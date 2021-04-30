@@ -9,7 +9,7 @@
         <ul>
             <li>{{row.user_name}}</li>
             <li>{{row.bo_subject}}</li>
-            <li>날짜{{row.regdate}}</li>
+            <li class="regdate">날짜{{row.regdate}}</li>
             <li>조회수 {{row.read_hit}}</li>
         </ul>
     </div>
@@ -140,6 +140,12 @@
         }else{
             document.getElementById("bo-view").style.display='block';
         }
+		//날짜 형식에 맞게 
+		for(var i=0;i<$(".regdate").length;i++){
+			var date=getFormatDate($(".regdate").eq(i).html());
+			$(".regdate").eq(i).html(date);
+
+		}
     }
     //게시판 삭제하기
     function boardDelete(bo_id){

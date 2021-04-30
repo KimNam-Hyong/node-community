@@ -16,7 +16,6 @@ const redisClient = redis.createClient({
   password:process.env.REDIS_PASSWORD
 });
 const {sequelize} = require('./models');
-const {SiteSetting} = require('./models/site_setting');
 const passportConfig = require('./passport');
 const mainRouter = require('./routes/main');
 const setupRouter = require('./routes/setup');
@@ -49,14 +48,18 @@ sequelize.sync({ force: false })
     console.error(err);
   });
 
-
-app.use(morgan('dev'));//로그찍는 미들웨어
+if (process.env.NODE_ENV === 'production')
+{
+	app.use(morgan('combined'));
+}else{
+	app.use(morgan('dev'));//로그찍는 미들웨어
+}
 app.use(express.static(path.join(__dirname,'public')));//css,js 디렉토리 지정
 app.use('/upload', express.static(path.join(__dirname, 'uploads')));
 app.use(express.json());//json
 app.use(express.urlencoded({extended:false}));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-const sessionMiddleware = session({
+const sessionMiddleware = {
   resave:false,
   saveUninitalized:false,
   secret:process.env.COOKIE_SECRET,
@@ -65,10 +68,12 @@ const sessionMiddleware = session({
       secure:false
   },
   store: new RedisStore({client:redisClient}),
-});
-app.use(sessionMiddleware);
+};
+if(process.env.NODE_ENV === 'production'){
+	sessionMiddleware.proxy = true;
+}
 
-
+app.use(session(sessionMiddleware));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use((req,res,next) => {    

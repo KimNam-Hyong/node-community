@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
-const config = require('../config/config.json')[env];
+const config = require('../config/config')[env];
 const User = require('./user');//회원관련 db
 const SiteSetting = require('./site_setting');//사이트설정관련 db
 const BoardSetting = require('./board_setting');//게시판설정 관련 db

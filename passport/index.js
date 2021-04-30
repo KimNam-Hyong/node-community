@@ -5,7 +5,11 @@ const User = require('../models/user');
 module.exports = () =>{
     
     passport.serializeUser((user,done)=>{
-        done(null,user.user_id);
+		try{
+		  done(null,user.user_id);
+		}catch(error){
+		  console.error(error);
+		}
     });
     passport.deserializeUser((user_id,done)=>{
         User.findOne({ where : { 'user_id':user_id}})

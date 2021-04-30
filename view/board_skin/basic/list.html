@@ -44,7 +44,7 @@
                     {{ notice.user_name }}</a>
                 </td>
                 <td>{{ notice.read_hit }}</td>
-                <td>{{ notice.regdate }}</td>
+                <td><span class="regdate">{{ notice.regdate }}</span></td>
             </tr>
             {% endfor %}
             {% set no = (pageData.totalCnt - pageData.skipSize) %}
@@ -77,7 +77,7 @@
                     {{ row.user_name }}</a>
                 </td>
                 <td>{{ row.read_hit }}</td>
-                <td>{{ row.regdate }}</td>
+                <td class="regdate">{{ row.regdate}}</td>
             </tr>
             {% set no = no -1 %}
             {% endfor %}
@@ -127,7 +127,16 @@
         }else{
             document.getElementById("bo-list").style.display='block';
         }
+		//날짜를 형식에 맞게
+		for(var i=0;i<$(".regdate").length;i++){
+			var date=getFormatDate($(".regdate").eq(i).html());
+			$(".regdate").eq(i).html(date);
+
+		}
     }
+
+	
+	
 </script>
 <!-- 스크립트 끝 -->
 {% endblock %}
